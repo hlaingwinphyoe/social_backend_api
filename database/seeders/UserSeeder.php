@@ -17,7 +17,12 @@ class UserSeeder extends Seeder
         User::create([
             'name' => "Demo User",
             'email' => 'demo@example.com',
-            'password' => Hash::make('demo123')
+            'password' => Hash::make('demo123'),
+            'email_verified_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
+
+        User::factory()->count(3)->create();
     }
 }
