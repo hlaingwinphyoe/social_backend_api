@@ -55,6 +55,13 @@ Building API for Social.
     php artisan serve
     ```
 
+## Features
+
+- **Authentication** - Manage users
+- **Posts** - Manage posts
+- **Comments** - Manage comments
+- **Reactions** - Manage reactions
+
 ## API Docs
 
 Access the api documentation at `/docs/api` Or import Social Api.postman_collection.json file
