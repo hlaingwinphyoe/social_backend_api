@@ -64,4 +64,4 @@ Building API for Social.
 
 ## API Docs
 
-Access the api documentation at `/docs/api` Or import Social Api.postman_collection.json file
+import Social Api.postman_collection.json file in postman
