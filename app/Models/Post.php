@@ -28,4 +28,11 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(Reaction::class);
+    }
+
+    
 }

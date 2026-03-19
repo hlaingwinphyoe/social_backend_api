@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Request;
@@ -53,6 +54,18 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User logged out successfully',
+        ], 200);
+    }
+
+    public function myProfile(): JsonResponse
+    {
+        $user = Auth::user();
+
+        $user->loadCount(['posts', 'reactions', 'comments']);
+
+        return response()->json([
+            'message' => 'Profile retrieved successfully',
+            'user' => new UserResource($user)
         ], 200);
     }
 }

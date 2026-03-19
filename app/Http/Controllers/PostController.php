@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\StoreReactionRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\CommentResource;
@@ -32,7 +33,7 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Posts retrieved successfully',
             'posts' => PostResource::collection($posts),
-        ]);
+        ], 200);
     }
 
     /**
@@ -48,7 +49,7 @@ class PostController extends Controller
             return response()->json([
                 'message' => 'Post created successfully',
                 'post' => new PostResource($post),
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Post creation failed',
@@ -69,7 +70,7 @@ class PostController extends Controller
             return response()->json([
                 'message' => 'Post updated successfully',
                 'post' => new PostResource($post),
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Post update failed',
@@ -89,7 +90,7 @@ class PostController extends Controller
 
             return response()->json([
                 'message' => 'Post deleted successfully',
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Post deletion failed',
@@ -105,7 +106,7 @@ class PostController extends Controller
         return response()->json([
             'message' => 'Posts retrieved successfully',
             'posts' => PostResource::collection($posts),
-        ]);
+        ], 200);
     }
 
     public function storeComment(StoreCommentRequest $request, Post $post): JsonResponse
@@ -119,10 +120,31 @@ class PostController extends Controller
             return response()->json([
                 'message' => 'Comment created successfully',
                 'comment' => new CommentResource($comment),
-            ]);
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Comment creation failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function storeReaction(StoreReactionRequest $request, Post $post): JsonResponse
+    {
+        $data = $request->validated();
+
+        try {
+            $result = $this->postService->toggleReaction($post, $data);
+
+            return response()->json([
+                'message' => 'Reaction updated successfully',
+                'status' => $result['status'],
+                'count' => $result['count'],
+                'reaction_type' => $result['reaction_type']
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Reaction update failed',
                 'error' => $e->getMessage(),
             ], 500);
         }

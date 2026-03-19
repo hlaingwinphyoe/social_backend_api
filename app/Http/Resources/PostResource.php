@@ -21,7 +21,10 @@ class PostResource extends JsonResource
             'image' => $this->image ? asset('storage/' . $this->image) : null,
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
-            'created_at' => $this->created_at->diffForHumans(),
+            'reactions_count' => $this->reactions_count ?? 0,
+            'comments_count' => $this->comments_count ?? 0,
+            'is_reacted' => $this->relationLoaded('reactions') ? $this->reactions->isNotEmpty() : false,
+            'created_at' => $this->created_at->shortRelativeDiffForHumans(),
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
         ];
     }

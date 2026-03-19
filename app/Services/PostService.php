@@ -11,7 +11,11 @@ class PostService
 {
     public function getAllPosts(?string $searchTerm = null): Collection
     {
-        return Post::with('user', 'comments')
+        return Post::with(['user', 'comments'])
+            ->withCount(['reactions', 'comments'])
+            ->with(['reactions' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }])
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where('title', 'like', "%{$searchTerm}%")
                     ->orWhere('content', 'like', "%{$searchTerm}%");
@@ -22,7 +26,11 @@ class PostService
 
     public function getMyPosts(): Collection
     {
-        return Post::with('user', 'comments')
+        return Post::with(['user', 'comments'])
+            ->withCount(['reactions', 'comments'])
+            ->with(['reactions' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }])
             ->where('user_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
@@ -65,5 +73,30 @@ class PostService
     public function createComment(Post $post, array $data)
     {
         return $post->comments()->create($data);
+    }
+
+    public function toggleReaction(Post $post, array $data)
+    {
+        $userId = Auth::id();
+        $type = $data['type'];
+
+        $reaction = $post->reactions()->where('user_id', $userId)->first();
+
+        if ($reaction) {
+            $reaction->delete();
+            $status = 'removed';
+        } else {
+            $post->reactions()->create([
+                'user_id' => $userId,
+                'type' => $type
+            ]);
+            $status = 'added';
+        }
+
+        return [
+            'status' => $status,
+            'count' => $post->reactions()->count(),
+            'reaction_type' => $status === 'removed' ? null : $type
+        ];
     }
 }
