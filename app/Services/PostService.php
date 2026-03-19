@@ -11,11 +11,19 @@ class PostService
 {
     public function getAllPosts(?string $searchTerm = null): Collection
     {
-        return Post::with('user')
+        return Post::with('user', 'comments')
             ->when($searchTerm, function ($query, $searchTerm) {
                 $query->where('title', 'like', "%{$searchTerm}%")
                     ->orWhere('content', 'like', "%{$searchTerm}%");
             })
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+    public function getMyPosts(): Collection
+    {
+        return Post::with('user', 'comments')
+            ->where('user_id', Auth::id())
             ->orderBy('id', 'desc')
             ->get();
     }
@@ -49,6 +57,13 @@ class PostService
             Storage::disk('public')->delete($post->image);
         }
 
+        $post->comments()->delete();
+
         $post->delete();
+    }
+
+    public function createComment(Post $post, array $data)
+    {
+        return $post->comments()->create($data);
     }
 }

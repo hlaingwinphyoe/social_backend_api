@@ -22,7 +22,7 @@ class PostResource extends JsonResource
             'user_id' => $this->user_id,
             'user' => new UserResource($this->whenLoaded('user')),
             'created_at' => $this->created_at->diffForHumans(),
-            'updated_at' => $this->updated_at->diffForHumans(),
+            'comments' => CommentResource::collection($this->whenLoaded('comments')),
         ];
     }
 }

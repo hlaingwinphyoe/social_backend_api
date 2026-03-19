@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
@@ -81,10 +84,47 @@ class PostController extends Controller
     public function destroy(Post $post): JsonResponse
     {
         Gate::authorize('delete', $post);
-        $this->postService->deletePost($post);
+        try {
+            $this->postService->deletePost($post);
+
+            return response()->json([
+                'message' => 'Post deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Post deletion failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function myPosts(): JsonResponse
+    {
+        $posts = $this->postService->getMyPosts();
 
         return response()->json([
-            'message' => 'Post deleted successfully',
+            'message' => 'Posts retrieved successfully',
+            'posts' => PostResource::collection($posts),
         ]);
+    }
+
+    public function storeComment(StoreCommentRequest $request, Post $post): JsonResponse
+    {
+        $data = $request->validated();
+        $data['user_id'] = Auth::id();
+
+        try {
+            $comment = $this->postService->createComment($post, $data);
+
+            return response()->json([
+                'message' => 'Comment created successfully',
+                'comment' => new CommentResource($comment),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Comment creation failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }
