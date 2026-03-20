@@ -23,7 +23,7 @@ class StoreReactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|string|max:20',
+            'type' => 'required|string|in:like,unlike',
         ];
     }
 }
