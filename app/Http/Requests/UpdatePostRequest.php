@@ -26,7 +26,7 @@ class UpdatePostRequest extends FormRequest
         return [
             "title" => "required|string|max:255",
             "content" => "required|string|max:500",
-            "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
+            "image" => "nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,wmv|max:10240",
         ];
     }
 }

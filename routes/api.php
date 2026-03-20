@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('posts', PostController::class)->except('show');
     Route::controller(PostController::class)->group(function () {
         Route::get('/my-posts', 'myPosts');
+        Route::get('/posts/{post}/comments', 'getComments');
         Route::post('/posts/{post}/comments', 'storeComment');
         Route::post('/posts/{post}/reaction', 'storeReaction');
     });

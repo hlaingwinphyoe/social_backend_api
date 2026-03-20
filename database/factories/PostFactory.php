@@ -19,10 +19,10 @@ class PostFactory extends Factory
     public function definition(): array
     {
         $title = fake()->sentence;
-        $content = fake()->paragraphs(5, true);
+        $content = fake()->text(400);
 
         return [
-            'user_id' => User::all()->random()->id,
+            'user_id' => User::factory(),
             'title' => $title,
             'content' => $content,
         ];

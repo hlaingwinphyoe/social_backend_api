@@ -27,12 +27,15 @@ class PostController extends Controller
     public function index(Request $request): JsonResponse
     {
         $searchTerm = $request->input('q');
+        $limit = $request->input('limit');
 
-        $posts = $this->postService->getAllPosts($searchTerm);
+        $posts = $this->postService->getAllPosts($searchTerm, $limit);
+
+        $posts = PostResource::collection($posts)->response()->getData(true);
 
         return response()->json([
             'message' => 'Posts retrieved successfully',
-            'posts' => PostResource::collection($posts),
+            ...$posts,
         ], 200);
     }
 
@@ -103,9 +106,24 @@ class PostController extends Controller
     {
         $posts = $this->postService->getMyPosts();
 
+        $posts = PostResource::collection($posts)->response()->getData(true);
+
         return response()->json([
             'message' => 'Posts retrieved successfully',
-            'posts' => PostResource::collection($posts),
+            ...$posts,
+        ], 200);
+    }
+
+    public function getComments(Request $request, Post $post): JsonResponse
+    {
+        $limit = $request->input('limit');
+        $comments = $this->postService->getComments($post, $limit);
+
+        $comments = CommentResource::collection($comments)->response()->getData(true);
+
+        return response()->json([
+            'message' => 'Comments retrieved successfully',
+            ...$comments,
         ], 200);
     }
 
@@ -116,6 +134,7 @@ class PostController extends Controller
 
         try {
             $comment = $this->postService->createComment($post, $data);
+            $comment->load('user');
 
             return response()->json([
                 'message' => 'Comment created successfully',
@@ -141,7 +160,7 @@ class PostController extends Controller
                 'status' => $result['status'],
                 'count' => $result['count'],
                 'reaction_type' => $result['reaction_type']
-            ], 201);
+            ], 200);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Reaction update failed',

@@ -3,37 +3,52 @@
 namespace App\Services;
 
 use App\Models\Post;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class PostService
 {
-    public function getAllPosts(?string $searchTerm = null): Collection
+    public function getAllPosts(?string $searchTerm = null, $limit = 7): LengthAwarePaginator
     {
-        return Post::with(['user', 'comments'])
+        return Post::with([
+            'user',
+            'comments.user',
+            'reactions' => fn($q) => $q->where('user_id', Auth::id()),
+        ])
             ->withCount(['reactions', 'comments'])
-            ->with(['reactions' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }])
-            ->when($searchTerm, function ($query, $searchTerm) {
-                $query->where('title', 'like', "%{$searchTerm}%")
-                    ->orWhere('content', 'like', "%{$searchTerm}%");
-            })
-            ->orderBy('id', 'desc')
-            ->get();
+            ->when(
+                $searchTerm,
+                fn($query, $searchTerm) =>
+                $query->where(
+                    fn($q) =>
+                    $q->where('title', 'like', "%{$searchTerm}%")
+                        ->orWhere('content', 'like', "%{$searchTerm}%")
+                )
+            )
+            ->orderByDesc('id')
+            ->paginate($limit);
     }
 
-    public function getMyPosts(): Collection
+    public function getMyPosts($limit = 7): LengthAwarePaginator
     {
-        return Post::with(['user', 'comments'])
+        return Post::with([
+            'user',
+            'comments.user',
+            'reactions' => fn($q) => $q->where('user_id', Auth::id()),
+        ])
             ->withCount(['reactions', 'comments'])
-            ->with(['reactions' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }])
             ->where('user_id', Auth::id())
-            ->orderBy('id', 'desc')
-            ->get();
+            ->orderByDesc('id')
+            ->paginate($limit);
+    }
+
+    public function getComments(Post $post, $limit = 10): LengthAwarePaginator
+    {
+        return $post->comments()
+            ->with('user')
+            ->orderByDesc('id')
+            ->paginate($limit);
     }
 
     public function createPost(array $data): Post
