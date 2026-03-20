@@ -132,6 +132,25 @@
                 }
               },
               "response": []
+            },
+            {
+              "name": "Get Comments",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/posts/1/comments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "posts",
+                    "1",
+                    "comments"
+                  ]
+                }
+              },
+              "response": []
             }
           ]
         },
@@ -155,13 +174,13 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/posts/1/reaction",
+                  "raw": "{{baseUrl}}/posts/4/reaction",
                   "host": [
                     "{{baseUrl}}"
                   ],
                   "path": [
                     "posts",
-                    "1",
+                    "4",
                     "reaction"
                   ]
                 }
@@ -176,12 +195,25 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/posts",
+              "raw": "{{baseUrl}}/posts?limit=7",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "posts"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": null,
+                  "description": "search query",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "7",
+                  "description": "show per page limit"
+                }
               ]
             }
           },
@@ -210,7 +242,7 @@
                 },
                 {
                   "key": "image (optional)",
-                  "description": "Upload File Max Size 2MB",
+                  "description": "Upload File Max Size 10MB",
                   "type": "file",
                   "uuid": "c1b22a02-740c-4346-958e-cb60bbee2aef",
                   "src": "/Users/macbookpro/Pictures/couleur-leaves-10165438_1920.jpg"
@@ -252,7 +284,7 @@
                 },
                 {
                   "key": "image (optional)",
-                  "description": "Upload File Max Size 2MB",
+                  "description": "Upload File Max Size 10MB",
                   "type": "file",
                   "uuid": "c1b22a02-740c-4346-958e-cb60bbee2aef",
                   "src": "/Users/macbookpro/Pictures/couleur-leaves-10165438_1920.jpg"
