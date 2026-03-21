@@ -19,8 +19,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'post_count' => $this->posts_count ?? 0,
-            'reaction_count' => $this->reactions_count ?? 0,
-            'comment_count' => $this->comments_count ?? 0,
+            'reaction_count' => $this->post_reactions_count ?? 0,
+            'comment_count' => $this->post_comments_count ?? 0,
             'created_at' => $this->created_at->format('d M, Y'),
         ];
     }

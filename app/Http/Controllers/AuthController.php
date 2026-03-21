@@ -61,7 +61,7 @@ class AuthController extends Controller
     {
         $user = Auth::user();
 
-        $user->loadCount(['posts', 'reactions', 'comments']);
+        $user->loadCount(['posts', 'postReactions', 'postComments']);
 
         return response()->json([
             'message' => 'Profile retrieved successfully',
