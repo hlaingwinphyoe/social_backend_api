@@ -101,10 +101,10 @@ All routes (except `/api/register` and `/api/login`) require the **Authorization
 
 ## Comments
 
-| Method | Endpoint                       | Description                                    | Query / Request Body Parameters                          |
-| :----- | :----------------------------- | :--------------------------------------------- | :------------------------------------------------------- |
-| `GET`  | `/api/posts/{postId}/comments` | List comments attached on a specific feed Item | **Query Params**: `limit` (pagination page size returns) |
-| `POST` | `/api/posts/{postId}/comments` | Create feedback comment strings under post     | **Body**: `{ "content" }` (max: 500 chars)               |
+| Method | Endpoint                       | Description                                | Query / Request Body Parameters                          |
+| :----- | :----------------------------- | :----------------------------------------- | :------------------------------------------------------- |
+| `GET`  | `/api/posts/{postId}/comments` | List comments with pagination              | **Query Params**: `limit` (pagination page size returns) |
+| `POST` | `/api/posts/{postId}/comments` | Create feedback comment strings under post | **Body**: `{ "content" }` (max: 500 chars)               |
 
 ---
 
