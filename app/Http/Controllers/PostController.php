@@ -48,6 +48,7 @@ class PostController extends Controller
 
         try {
             $post = $this->postService->createPost($data);
+            $post->load('user');
 
             return response()->json([
                 'message' => 'Post created successfully',
