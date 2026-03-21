@@ -70,6 +70,7 @@ class PostController extends Controller
         $data = $request->validated();
         try {
             $post = $this->postService->updatePost($post, $data);
+            $post->load('user');
 
             return response()->json([
                 'message' => 'Post updated successfully',
