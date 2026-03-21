@@ -138,4 +138,4 @@ All routes (except `/api/register` and `/api/login`) require the **Authorization
 ```
 
 > [!TIP]
-> You can also import `Social Api.postman_collection.json` file in postman or http://127.0.0.1:8000/docs/api.
+> You can also import `Social Api.postman_collection.json` file in postman or https://social-api.futureadvicebycharm.com/docs/api.
